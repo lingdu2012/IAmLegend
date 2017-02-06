@@ -31,13 +31,15 @@
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@+id/boom_num"
         android:layout_toStartOf="@+id/boom_num"/>
-    <ImageView
+    <RelativeLayout
+        android:id="@+id/boom_area"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:src="@drawable/radar"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/imageView2" />
+        android:background="@drawable/radar">
+
+    </RelativeLayout>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/my_tx"
@@ -87,7 +89,7 @@
         android:layout_marginTop="90dp"
         android:padding="3dp"
         android:id="@+id/imageView5"
-        android:layout_alignTop="@+id/imageView2"
+        android:layout_alignTop="@+id/boom_area"
         android:layout_alignLeft="@+id/imageView"
         android:layout_alignStart="@+id/imageView" />
 </RelativeLayout>
