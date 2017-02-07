@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,14 +32,17 @@ public class Ampage extends Activity {
             ImageView t1 = new ImageView(this);
             t1.setImageResource(R.drawable.target);
             //t1.setBackgroundResource(R.drawable.locking);
-            t1.setPadding(10,10,10,10);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(80,80);
-            lp.topMargin=200;
-            lp.leftMargin=200;
+            int dwl=(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,1,getResources().getDisplayMetrics());
+            t1.setPadding(3*dwl,3*dwl,3*dwl,3*dwl);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(25*dwl,25*dwl);
+            lp.topMargin=(150-30)*dwl;
+            lp.leftMargin=(150-30)*dwl;
             t1.setLayoutParams(lp);
+
             t1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.i("此处的id是","："+v.getId()+"元素个数为："+b_area.getChildCount());
                     v.setBackgroundResource(R.drawable.locking);
                 }
             });
