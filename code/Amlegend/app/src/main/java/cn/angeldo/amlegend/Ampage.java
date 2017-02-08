@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -27,28 +28,34 @@ public class Ampage extends Activity {
         mytx = (SimpleDraweeView)findViewById(R.id.my_tx);
 
         b_area=(RelativeLayout)findViewById(R.id.boom_area);
+        final Drawable bg=this.getResources().getDrawable(R.drawable.locking);
 
         try {
-            ImageView t1 = new ImageView(this);
-            t1.setImageResource(R.drawable.target);
-            //t1.setBackgroundResource(R.drawable.locking);
-            int dwl=(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,1,getResources().getDisplayMetrics());
-            t1.setPadding(3*dwl,3*dwl,3*dwl,3*dwl);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(25*dwl,25*dwl);
-            lp.topMargin=(150-30)*dwl;
-            lp.leftMargin=(150-30)*dwl;
-            t1.setLayoutParams(lp);
+            for(int i=0;i<2;i++) {
+                ImageView t1 = new ImageView(this);
+                t1.setImageResource(R.drawable.target);
+                int dwl = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
+                t1.setPadding(3 * dwl, 3 * dwl, 3 * dwl, 3 * dwl);
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(25 * dwl, 25 * dwl);
+                lp.topMargin = (150 - 30*i) * dwl;
+                lp.leftMargin = (150 - 30*i) * dwl;
+                t1.setLayoutParams(lp);
+                t1.setId(100+i);
+                t1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.i("此处的id是", "：" + v.getId() + "元素个数为：" + b_area.getChildCount());
+                        if(v.getBackground()==bg){
+                            Log.i("pocketcity","有背景");
+                        }
+                        v.setBackgroundResource(R.drawable.locking);
 
-            t1.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.i("此处的id是","："+v.getId()+"元素个数为："+b_area.getChildCount());
-                    v.setBackgroundResource(R.drawable.locking);
-                }
-            });
+                    }
+                });
 
-            b_area.addView(t1);
 
+                b_area.addView(t1);
+            }
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,5 +91,17 @@ public class Ampage extends Activity {
                                 dialog.dismiss();
                             }
                         }).show();
+    }
+    //消灭提示
+    protected void dialog_ko() {
+        new AlertDialog.Builder(this)
+                .setTitle("KO！")
+                .setMessage("成功消灭目标")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        dialoginterface.dismiss();
+                    }
+                })
+                .show();
     }
 }
