@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -18,7 +17,9 @@ import com.facebook.drawee.view.SimpleDraweeView;
 
 public class Ampage extends Activity {
     private SimpleDraweeView mytx;
+    private ImageView itool;
     private RelativeLayout b_area;
+    private int ichoice=-1;//选择中目标的index
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,9 +27,8 @@ public class Ampage extends Activity {
         setContentView(R.layout.activity_ampage);
 
         mytx = (SimpleDraweeView)findViewById(R.id.my_tx);
-
+        itool=(ImageView)findViewById(R.id.itool);
         b_area=(RelativeLayout)findViewById(R.id.boom_area);
-        final Drawable bg=this.getResources().getDrawable(R.drawable.locking);
 
         try {
             for(int i=0;i<2;i++) {
@@ -40,26 +40,37 @@ public class Ampage extends Activity {
                 lp.topMargin = (150 - 30*i) * dwl;
                 lp.leftMargin = (150 - 30*i) * dwl;
                 t1.setLayoutParams(lp);
-                t1.setId(100+i);
+                t1.setId(i);
                 t1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Log.i("此处的id是", "：" + v.getId() + "元素个数为：" + b_area.getChildCount());
-                        if(v.getBackground()==bg){
-                            Log.i("pocketcity","有背景");
+                        if(ichoice==v.getId()){
+                            v.setBackgroundResource(0);
+                            ichoice = -1;
+                        }else{
+                            if(ichoice > -1) {
+                                b_area.getChildAt(ichoice).setBackgroundResource(0);
+                            }
+                            v.setBackgroundResource(R.drawable.locking);
+                            ichoice=v.getId();
                         }
-                        v.setBackgroundResource(R.drawable.locking);
 
                     }
                 });
-
-
                 b_area.addView(t1);
             }
         }catch (Exception e) {
             e.printStackTrace();
         }
-
+        //绑定道具点击事件
+        itool.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b_area.removeViewAt(0);
+                dialog_ko();
+            }
+        });
 
     }
     //退出调用

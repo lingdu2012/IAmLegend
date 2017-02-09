@@ -17,10 +17,11 @@
         android:layout_height="wrap_content"
         android:text="Hello Legend!"
         android:textColor="@color/colorWhite"
-        android:id="@+id/textView"
+        android:id="@+id/i_name"
         android:layout_alignBottom="@+id/my_tx"
         android:layout_toRightOf="@+id/my_tx"
-        android:layout_toEndOf="@+id/my_tx" />
+        android:layout_toEndOf="@+id/my_tx"
+        android:layout_marginLeft="10dp"/>
 
     <ImageView
         android:layout_width="20dp"
@@ -80,5 +81,29 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
+    <ImageView
+        android:id="@+id/i_total"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/total"
+        android:layout_alignTop="@+id/my_tx"
+        android:layout_toRightOf="@+id/my_tx"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"/>
+    <TextView
+        android:id="@+id/i_t_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/i_total"
+        android:layout_alignBottom="@+id/i_total"
+        android:text="0"
+        android:textColor="@color/colorWhite"
+        android:textSize="16sp"
+        android:layout_marginLeft="10dp" />
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:src="@drawable/info"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"/>
 </RelativeLayout>
