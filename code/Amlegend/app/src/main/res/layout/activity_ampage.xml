@@ -101,9 +101,20 @@
         android:textSize="16sp"
         android:layout_marginLeft="10dp" />
     <ImageView
+        android:id="@+id/btn_info"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:src="@drawable/info"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/btn_info"
+        android:layout_alignBottom="@+id/btn_info"
+        android:textColor="@color/colorGray"
+        android:text="刚刚周围有人发动了攻击"
+        android:textSize="12sp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="10dp"/>
 </RelativeLayout>
