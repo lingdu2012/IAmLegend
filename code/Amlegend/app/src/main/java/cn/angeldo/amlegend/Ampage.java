@@ -18,6 +18,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 public class Ampage extends Activity {
     private SimpleDraweeView mytx;
     private ImageView itool;
+    private ImageView btn_search;
     private RelativeLayout b_area;
     private int ichoice=-1;//选择中目标的index
     @Override
@@ -28,7 +29,15 @@ public class Ampage extends Activity {
 
         mytx = (SimpleDraweeView)findViewById(R.id.my_tx);
         itool=(ImageView)findViewById(R.id.itool);
+        btn_search=(ImageView)findViewById(R.id.btn_search);
         b_area=(RelativeLayout)findViewById(R.id.boom_area);
+
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
 
         try {
             for(int i=0;i<2;i++) {

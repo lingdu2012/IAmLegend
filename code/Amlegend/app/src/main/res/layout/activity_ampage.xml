@@ -77,7 +77,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/search"
-        android:id="@+id/imageView4"
+        android:id="@+id/btn_search"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
