@@ -6,8 +6,16 @@
 
 旨在
 * 精简操作
-* 提高互动反馈
-* 体现显著的内在奖励
-* 鼓励有明确目标的集体活动
-  ![](https://github.com/lingdu2012/IAmLegend/blob/master/design/sketch.jpg?raw=true)
 
+* 提高互动反馈
+
+* 体现显著的内在奖励
+
+* 鼓励有明确目标的集体活动
+
+  ------
+  ​
+  ![](https://github.com/lingdu2012/IAmLegend/blob/master/design/sketch.jpg?raw=true)
+  ------
+
+#代码架构
