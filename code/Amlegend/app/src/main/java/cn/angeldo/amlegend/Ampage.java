@@ -40,7 +40,6 @@ public class Ampage extends Activity {
             @Override
             public void onClick(View v) {
                 boom_area.removeAllViews();
-                boom_area.notify();
                 scanTarget(4);
                 Toast.makeText(getApplicationContext(), "扫描完毕", Toast.LENGTH_SHORT).show();
             }
@@ -86,7 +85,6 @@ public class Ampage extends Activity {
                 });
                 boom_area.addView(t1);
             }
-
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -96,14 +94,13 @@ public class Ampage extends Activity {
         Log.i("消灭的id是", "：" + current_choice);
         int targetNum=boom_area.getChildCount();
         for(int i=0;i<targetNum;i++){
-            Log.i("遍历的id是", "：" + boom_area.getChildAt(i).getId()+"位置id:"+i);
-
-            if (boom_area.getChildAt(i).getId() == current_choice) {
+            int removeId=boom_area.getChildAt(i).getId();
+            Log.i("遍历的id是", "：" + removeId+"位置id:"+i);
+            if (removeId == current_choice) {
                 boom_area.removeViewAt(i);
+                break;
             }
-
         }
-        boom_area.refreshDrawableState();
         dialog_ko();
         current_choice=-1;
     }
