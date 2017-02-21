@@ -19,3 +19,15 @@
   ------
 
 #代码架构
+
+- 客户端APP---android APP
+
+  fresco---facebook图片库
+
+  okhttpfinal---http封装库
+
+  baiduLBS---百度定位库
+
+- API---Laravel Lumen
+
+- 日志统计---Node.JS
