@@ -135,6 +135,9 @@ public class LocationApplication extends Application {
             if (mLocationResult != null) {
                 mLocationResult.setText(str);
             }
+            Log.i("myaddr:",myaddr);
+            Log.i("mylat:",mylat);
+            Log.i("mylot:",mylot);
             SharedPreferences.Editor editor = getSharedPreferences("pocketctiy",2).edit();
             editor.putString("plat",mylat);
             editor.putString("plot",mylot);

@@ -11,8 +11,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -20,7 +23,10 @@ import static cn.angeldo.amlegend.R.drawable.target;
 import static cn.angeldo.amlegend.R.id.itool;
 
 public class Ampage extends Activity {
+    private LocationClient mLocationClient;
+    private LocationApplication m;
     private SimpleDraweeView user_logo;//用户头像
+    private TextView info_tip;
     private ImageView boom_tool;//道具
     private ImageView btn_search;//搜索按钮
     private RelativeLayout boom_area;//攻击区域
@@ -35,6 +41,7 @@ public class Ampage extends Activity {
         boom_tool=(ImageView)findViewById(itool);
         btn_search=(ImageView)findViewById(R.id.btn_search);
         boom_area=(RelativeLayout)findViewById(R.id.boom_area);
+        info_tip=(TextView) findViewById(R.id.info_tip);
 
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +60,27 @@ public class Ampage extends Activity {
                 boomTarget();
             }
         });
-
+        try {
+            startMap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //启动地图定位
+    private void startMap(){
+        m= (LocationApplication)getApplication();
+        mLocationClient = m.mLocationClient;
+        m.mLocationResult = info_tip;
+        LocationClientOption loption = new LocationClientOption();
+        loption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置定位模式
+        loption.setCoorType("bd09ll");//返回的定位结果是百度经纬度，默认值gcj02
+        loption.setOpenGps(true);//可选，默认false,设置是否使用gps
+        loption.setScanSpan(5000);//设置发起定位请求的间隔时间为5000ms
+        loption.setIsNeedAddress(true);
+        loption.setIsNeedLocationDescribe(true);
+        loption.setIgnoreKillProcess(false);
+        mLocationClient.setLocOption(loption);
+        mLocationClient.start();
     }
     //退出调用
     public boolean onKeyDown(int keyCode, KeyEvent event) {
