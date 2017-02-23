@@ -2,8 +2,10 @@ package cn.angeldo.amlegend;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -26,11 +28,16 @@ public class Ampage extends Activity {
     private LocationClient mLocationClient;
     private LocationApplication m;
     private SimpleDraweeView user_logo;//用户头像
-    private TextView info_tip;
+    private TextView info_tip;//提示信息
     private ImageView boom_tool;//道具
     private ImageView btn_search;//搜索按钮
     private RelativeLayout boom_area;//攻击区域
     private int current_choice=-1;//选择中目标的index
+    //"39.993604",纬度"116.484719"经度
+    private double targetData[][]=new double[][]{{39.994604,116.483719},{39.992604,116.485719},{39.995604,116.486719}};
+    //当前经纬度
+    private String mylat;
+    private String mylot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +53,24 @@ public class Ampage extends Activity {
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boom_area.removeAllViews();
-                scanTarget(4);
-                Toast.makeText(getApplicationContext(), "扫描完毕", Toast.LENGTH_SHORT).show();
+                SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
+                mylat = pc.getString("plat", "none");
+                mylot = pc.getString("plot", "none");
+                Log.i("添加的lot是", "："+mylot);
+                Log.i("添加的lat是", "："+mylat);
+                if(mylat.length()>0 && mylot.length()>0){
+                    btn_search.setClickable(false);
+                    boom_area.removeAllViews();
+                    scanTarget(4);
+                    Toast.makeText(getApplicationContext(), "扫描完毕", Toast.LENGTH_SHORT).show();
+                    btn_search.setClickable(true);
+                }else{
+                    Toast.makeText(getApplicationContext(), "正在定位，请稍后再试！", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
-        scanTarget(2);
+        //scanTarget(2);
         //绑定道具点击事件
         boom_tool.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,14 +110,22 @@ public class Ampage extends Activity {
     //扫描目标
     public void scanTarget(int num){
         try {
-            for(int i=0;i<num;i++) {
+            //将px换算成dp
+            int dwl = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
+            for(int i=0;i<targetData.length;i++){
                 ImageView t1 = new ImageView(this);
                 t1.setImageResource(target);
-                int dwl = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
                 t1.setPadding(3 * dwl, 3 * dwl, 3 * dwl, 3 * dwl);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(25 * dwl, 25 * dwl);
-                lp.topMargin = (150 - 30*i) * dwl;
-                lp.leftMargin = (150 - 30*i) * dwl;
+                //Double.valueOf(mylat)-targetData[i][0]
+                //经度
+                int lot=(int)Math.floor((Double.valueOf(mylot)-targetData[i][1])*1000);
+                Log.i("添加的lot是", "："+lot);
+                //纬度
+                int lat=(int)Math.floor((Double.valueOf(mylat)-targetData[i][0])*1000);
+                Log.i("添加的lat是", "："+lat);
+                lp.topMargin = (150 - lot*10) * dwl;
+                lp.leftMargin = (150 - lat*10) * dwl;
                 t1.setLayoutParams(lp);
                 t1.setId(100+i);
                 Log.i("添加的id是", "：" + i + "实际数为：" +(100+i));
@@ -116,7 +142,8 @@ public class Ampage extends Activity {
             e.printStackTrace();
         }
         current_choice=-1;
-    }  //消灭目标
+    }
+    //消灭目标
     private void boomTarget(){
         Log.i("消灭的id是", "：" + current_choice);
         int targetNum=boom_area.getChildCount();
