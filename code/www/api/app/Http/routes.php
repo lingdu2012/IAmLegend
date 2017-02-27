@@ -14,3 +14,4 @@
 $app->get('/', function() use ($app) {
     return $app->welcome();
 });
+$app->get('user/register','UserController@register');
