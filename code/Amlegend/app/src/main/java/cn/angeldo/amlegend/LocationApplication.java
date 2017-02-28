@@ -139,7 +139,7 @@ public class LocationApplication extends Application {
             Log.i("myaddr:",myaddr);
             Log.i("mylat:",mylat);
             Log.i("mylot:",mylot);
-            SharedPreferences.Editor editor = this.getSharedPreferences("Amlegend", Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = getSharedPreferences("Amlegend", Context.MODE_PRIVATE).edit();
             editor.putString("plat",mylat);
             editor.putString("plot",mylot);
             editor.putString("paddr",myaddr);

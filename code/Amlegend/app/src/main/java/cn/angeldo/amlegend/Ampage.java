@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -16,14 +17,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 
+import cn.finalteam.okhttpfinal.JsonHttpRequestCallback;
+
 import static cn.angeldo.amlegend.R.drawable.target;
 import static cn.angeldo.amlegend.R.id.itool;
-
 public class Ampage extends Activity {
     private LocationClient mLocationClient;
     private LocationApplication m;
@@ -38,6 +41,8 @@ public class Ampage extends Activity {
     //当前经纬度
     private String mylat;
     private String mylot;
+    //初始化类
+    private Pcmm PCM=new Pcmm();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +75,8 @@ public class Ampage extends Activity {
             }
         });
 
-        //scanTarget(2);
+        //初始化用户
+        userInit();
         //绑定道具点击事件
         boom_tool.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,6 +182,21 @@ public class Ampage extends Activity {
         }
         Log.i("锁定的id是", "：" + current_choice);
     }
+    /* 初始化用户
+     * 已存在则直接显示
+     * 不存在则进行注册
+     */
+    protected void userInit(){
+        SharedPreferences pc=getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
+        String userId=pc.getString("userId","");
+        if(userId.length()>2){
+            String myurl=PCM.initUser;
+        }else {
+            TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            String szIME = TelephonyMgr.getDeviceId();
+            Log.i("本机标识是", "：" + szIME);
+        }
+    }
     //退出提示
     protected void dialog_loginout() {
         new AlertDialog.Builder(this)
@@ -211,4 +232,25 @@ public class Ampage extends Activity {
                 })
                 .show();
     }
+    private JsonHttpRequestCallback checkurl = new JsonHttpRequestCallback(){
+        @Override
+        public void onStart() {
+            Log.i("Amlegend","正在准备初始化");
+        }
+        @Override
+        protected void onSuccess(JSONObject jsonObject) {
+            super.onSuccess(jsonObject);
+            // mTvResult.setText(JsonFormatUtils.formatJson(jsonObject.toJSONString()));
+        }
+        //请求失败（服务返回非法JSON、服务器异常、网络异常）
+        @Override
+        public void onFailure(int errorCode, String msg) {
+
+        }
+        //请求网络结束
+        @Override
+        public void onFinish() {
+
+        }
+    };
 }
