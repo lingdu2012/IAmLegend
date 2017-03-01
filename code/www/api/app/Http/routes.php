@@ -17,3 +17,4 @@ $app->get('/', function() use ($app) {
 $app->get('user/register','UserController@register');
 
 $app->get('user/userInit','UserController@userInit');
+$app->post('user/userInit','UserController@userInit');

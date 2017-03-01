@@ -21,7 +21,7 @@ class UserController extends BaseController
 	 * 有则直接返回
 	 */
 	public function userInit(Request $request){
-         			
+       
 	    $markId=$request->input("markId");		
 		if(!$markId){
 			abort(404);
@@ -35,7 +35,7 @@ class UserController extends BaseController
 			//注册时间
 			$time=date('Y-m-d H:i:s',time());
 			$result_id=DB::table("user_info")->insertGetId(['mark_id'=>$markId,'register_time'=>$time]);
-			$data['result']=array('mark_id'=>$result_id);
+			$data['result']=array('id'=>$result_id);
 		}
 		$data['code']=0;
 		$data['msg']='';
