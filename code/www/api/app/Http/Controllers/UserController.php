@@ -22,20 +22,24 @@ class UserController extends BaseController
 	 */
 	public function userInit(Request $request){
        
-	    $markId=$request->input("markId");		
+	    $markId=$request->input("markId");
+	    $lat=$request->input("lat");
+	    $lot=$request->input("lot");
+			
 		if(!$markId){
 			abort(404);
 			return ;
 		}
-		$result=DB::table("user_info")->where("mark_id",'=',$markId)->select('id', 'mark_id','user_name')->get();
+		$result=DB::table("user_info")->where("mark_id",'=',$markId)->select('id', 'mark_id','user_name','score')->get();
 		if(count($result)>0){
 			//直接返回信息
 			$data['result']=$result;
 		}else{
 			//注册时间
 			$time=date('Y-m-d H:i:s',time());
-			$result_id=DB::table("user_info")->insertGetId(['mark_id'=>$markId,'register_time'=>$time]);
-			$data['result']=array('id'=>$result_id);
+			$result_id=DB::table("user_info")->insertGetId(['mark_id'=>$markId,'register_time'=>$time,'register_lat'=>$lat,'register_lot'=>$lot]);
+			
+			$data['result']=$result=DB::table("user_info")->where("id",'=',$result_id)->select('id', 'mark_id','user_name','score')->get();
 		}
 		$data['code']=0;
 		$data['msg']='';

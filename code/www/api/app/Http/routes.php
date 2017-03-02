@@ -14,7 +14,10 @@
 $app->get('/', function() use ($app) {
     return $app->welcome();
 });
+//用户相关api
 $app->get('user/register','UserController@register');
 
 $app->get('user/userInit','UserController@userInit');
 $app->post('user/userInit','UserController@userInit');
+//攻击相关api
+$app->post('attack/searchTarget','AttackController@searchTarget');
