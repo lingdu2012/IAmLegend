@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -33,12 +35,22 @@ import cn.finalteam.toolsfinal.JsonFormatUtils;
 
 import static cn.angeldo.amlegend.R.drawable.target;
 import static cn.angeldo.amlegend.R.id.itool;
-
+/**
+ * 功能描述：
+ * @ 获取当前经纬度
+ * @ 初始化用户信息
+ * @ 扫描攻击区域
+ * @ 锁定攻击目标
+ * @ 实施攻击
+ * */
 public class Ampage extends Activity {
     private LocationClient mLocationClient;
     private LocationApplication m;
     private SimpleDraweeView user_logo;//用户头像
     private TextView info_tip;//提示信息
+    private TextView mylocation;//我的地址
+    private TextView myname;//我的名字
+    private TextView myscore;//我的成绩
     private ImageView boom_tool;//道具
     private ImageView btn_search;//搜索按钮
     private RelativeLayout boom_area;//攻击区域
@@ -48,12 +60,18 @@ public class Ampage extends Activity {
     //当前经纬度
     private String mylat;
     private String mylot;
+    private int isInited=0;
     //初始化类
     private Pcmm PCM=new Pcmm();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //初始化fresco
         Fresco.initialize(this);
+        //初始化okHttp
+        OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
+        OkHttpFinal.getInstance().init(builder.build());
+        //加载页面
         setContentView(R.layout.activity_ampage);
 
         user_logo = (SimpleDraweeView)findViewById(R.id.my_tx);
@@ -61,19 +79,18 @@ public class Ampage extends Activity {
         btn_search=(ImageView)findViewById(R.id.btn_search);
         boom_area=(RelativeLayout)findViewById(R.id.boom_area);
         info_tip=(TextView) findViewById(R.id.info_tip);
+        mylocation=(TextView) findViewById(R.id.info_location);
+        myname=(TextView) findViewById(R.id.i_name);
+        myscore=(TextView) findViewById(R.id.i_score);
 
+        //搜索按钮，默认无法点击
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
-                mylat = pc.getString("plat", "none");
-                mylot = pc.getString("plot", "none");
-                Log.i("添加的lot是", "："+mylot);
-                Log.i("添加的lat是", "："+mylat);
                 if(mylat.length()>0 && mylot.length()>0){
                     btn_search.setClickable(false);
                     boom_area.removeAllViews();
-                    scanTarget(4);
+                    scanTarget();
                     Toast.makeText(getApplicationContext(), "扫描完毕", Toast.LENGTH_SHORT).show();
                     btn_search.setClickable(true);
                 }else{
@@ -81,10 +98,29 @@ public class Ampage extends Activity {
                 }
             }
         });
-        OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
-        OkHttpFinal.getInstance().init(builder.build());
-        //初始化用户
-        userInit();
+        //绑定监听事件
+        mylocation.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                //获取当前经纬度
+                SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
+                mylat = pc.getString("plat", "none");
+                mylot = pc.getString("plot", "none");
+                //仅初始化一次用户信息
+                if(isInited==0 && mylat.length()>0 && mylot.length()>0) {
+                    //初始化用户
+                    userInit();
+                }
+            }
+        });
         //绑定道具点击事件
         boom_tool.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +128,7 @@ public class Ampage extends Activity {
                 boomTarget();
             }
         });
+
         try {
             startMap();
         } catch (Exception e) {
@@ -102,12 +139,12 @@ public class Ampage extends Activity {
     private void startMap(){
         m= (LocationApplication)getApplication();
         mLocationClient = m.mLocationClient;
-        m.mLocationResult = info_tip;
+        m.mLocationResult = mylocation;//返回并直接显示在控件
         LocationClientOption loption = new LocationClientOption();
         loption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置定位模式
         loption.setCoorType("bd09ll");//返回的定位结果是百度经纬度，默认值gcj02
         loption.setOpenGps(true);//可选，默认false,设置是否使用gps
-        loption.setScanSpan(5000);//设置发起定位请求的间隔时间为5000ms
+        loption.setScanSpan(50000);//设置发起定位请求的间隔时间为50000ms
         loption.setIsNeedAddress(true);
         loption.setIsNeedLocationDescribe(true);
         loption.setIgnoreKillProcess(false);
@@ -122,7 +159,7 @@ public class Ampage extends Activity {
         return false;
     }
     //扫描目标
-    public void scanTarget(int num){
+    public void scanTarget(){
         try {
             //将px换算成dp
             int dwl = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
@@ -191,27 +228,24 @@ public class Ampage extends Activity {
         Log.i("锁定的id是", "：" + current_choice);
     }
     /* 初始化用户
-     * 已存在则直接显示
-     * 不存在则进行注册
      */
     protected void userInit(){
-        SharedPreferences pc=getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
-        String userId=pc.getString("userId","");
-        if(userId.length()>0){
-            Log.i("当前用户id", "：" + userId);
-        }else {
-            TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-            String phoneIME = TelephonyMgr.getDeviceId();
-            Log.i("本机标识是", "：" + phoneIME);
-            //创建网络请求
-            RequestParams params = new RequestParams();
-            //表单数据
-            params.addFormDataPart("markId",phoneIME);
-            try {
-                HttpRequest.post(PCM.initUser, params,toInitUser);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        String phoneIME = TelephonyMgr.getDeviceId();
+        Log.i("本机标识是", "：" + phoneIME);
+        Log.i("本机标识lat是", "：" + mylat);
+        Log.i("本机标识lot是", "：" + mylot);
+        //创建网络请求
+        RequestParams params = new RequestParams();
+        //表单数据
+        params.addFormDataPart("markId",phoneIME);
+        params.addFormDataPart("lat",mylat);
+        params.addFormDataPart("lot",mylot);
+
+        try {
+            HttpRequest.post(PCM.initUser, params,toInitUser);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     //退出提示
@@ -264,12 +298,16 @@ public class Ampage extends Activity {
             SharedPreferences.Editor editor = getSharedPreferences("Amlegend", Context.MODE_PRIVATE).edit();
             editor.putString("userId",userId);
             editor.commit();
+            myname.setText(obj.getString("user_name"));
+            myscore.setText(obj.getString("score"));
+
             Log.i("Amlegend","返回的用户id是："+userId);
+            isInited=1;
         }
         //请求失败（服务返回非法JSON、服务器异常、网络异常）
         @Override
         public void onFailure(int errorCode, String msg) {
-
+            Log.i("Amlegend","网络失败");
         }
         //请求网络结束
         @Override

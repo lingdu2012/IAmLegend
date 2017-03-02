@@ -91,7 +91,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginLeft="10dp"/>
     <TextView
-        android:id="@+id/i_t_num"
+        android:id="@+id/i_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/i_total"
@@ -118,4 +118,14 @@
         android:textSize="12sp"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_location"
+        android:textColor="@color/colorWhite"
+        android:text="正在初始化，请稍候······"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/boom_area"
+        android:layout_marginBottom="10dp"/>
 </RelativeLayout>
