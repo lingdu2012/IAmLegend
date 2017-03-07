@@ -21,3 +21,9 @@ $app->get('user/userInit','UserController@userInit');
 $app->post('user/userInit','UserController@userInit');
 //攻击相关api
 $app->post('attack/searchTarget','AttackController@searchTarget');
+//攻击相关api
+$app->get('attack/searchTarget','AttackController@searchTarget');
+//攻击相关api
+$app->post('attack/boomTarget','AttackController@boomTarget');
+//攻击相关api
+$app->get('attack/boomTarget','AttackController@boomTarget');
