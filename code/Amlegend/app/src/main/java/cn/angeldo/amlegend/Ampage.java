@@ -35,6 +35,7 @@ import cn.finalteam.toolsfinal.JsonFormatUtils;
 
 import static cn.angeldo.amlegend.R.drawable.target;
 import static cn.angeldo.amlegend.R.id.itool;
+
 /**
  * 功能描述：
  * @ 获取当前经纬度
@@ -160,25 +161,45 @@ public class Ampage extends Activity {
     }
     //扫描目标
     public void scanTarget(){
+        SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
+        String userId = pc.getString("userId", "none");
+        //创建网络请求
+        RequestParams params = new RequestParams();
+        //表单数据
+        params.addFormDataPart("userId",userId);
+        params.addFormDataPart("lat",mylat);
+        params.addFormDataPart("lot",mylot);
+
+        try {
+            HttpRequest.post(PCM.getTargets, params,toGetTargets);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    //展示分布目标
+    private void searchTarget(JSONObject jsonObject){
         try {
             //将px换算成dp
             int dwl = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 1, getResources().getDisplayMetrics());
-            for(int i=0;i<targetData.length;i++){
+            JSONArray objArray = JSONObject.parseArray(jsonObject.getString("result"));
+
+            for(int i=0;i<objArray.size();i++){
                 ImageView t1 = new ImageView(this);
                 t1.setImageResource(target);
                 t1.setPadding(3 * dwl, 3 * dwl, 3 * dwl, 3 * dwl);
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(25 * dwl, 25 * dwl);
                 //Double.valueOf(mylat)-targetData[i][0]
+                JSONObject obj = (JSONObject) objArray.get(i);
                 //经度
-                int lot=(int)Math.floor((Double.valueOf(mylot)-targetData[i][1])*1000);
+                int lot=(int)Math.floor((Double.valueOf(mylot)-obj.getDouble("lot"))*1000);
                 Log.i("添加的lot是", "："+lot);
                 //纬度
-                int lat=(int)Math.floor((Double.valueOf(mylat)-targetData[i][0])*1000);
+                int lat=(int)Math.floor((Double.valueOf(mylat)-obj.getDouble("lat"))*1000);
                 Log.i("添加的lat是", "："+lat);
                 lp.topMargin = (150 - lot*10) * dwl;
                 lp.leftMargin = (150 - lat*10) * dwl;
                 t1.setLayoutParams(lp);
-                t1.setId(100+i);
+                t1.setId(obj.getInteger("user_id"));
                 Log.i("添加的id是", "：" + i + "实际数为：" +(100+i));
                 t1.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -203,11 +224,24 @@ public class Ampage extends Activity {
             Log.i("遍历的id是", "：" + removeId+"位置id:"+i);
             if (removeId == current_choice) {
                 boom_area.removeViewAt(i);
+
+                SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
+                String userId = pc.getString("userId", "none");
+                //创建网络请求
+                RequestParams params = new RequestParams();
+                //表单数据
+                params.addFormDataPart("killerId",userId);
+                params.addFormDataPart("lat",mylat);
+                params.addFormDataPart("lot",mylot);
+                params.addFormDataPart("userId",removeId);
+                try {
+                    HttpRequest.post(PCM.boomTarget, params,toBoomTarget);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             }
         }
-        dialog_ko();
-        current_choice=-1;
     }
     //更改目标
     private void changeTarget(int targetId){
@@ -283,6 +317,7 @@ public class Ampage extends Activity {
                 })
                 .show();
     }
+    //初始化用户信息
     private JsonHttpRequestCallback toInitUser = new JsonHttpRequestCallback(){
         @Override
         public void onStart() {
@@ -303,6 +338,55 @@ public class Ampage extends Activity {
 
             Log.i("Amlegend","返回的用户id是："+userId);
             isInited=1;
+        }
+        //请求失败（服务返回非法JSON、服务器异常、网络异常）
+        @Override
+        public void onFailure(int errorCode, String msg) {
+            Log.i("Amlegend","网络失败");
+        }
+        //请求网络结束
+        @Override
+        public void onFinish() {
+
+        }
+    };
+    //获取目标信息
+    private JsonHttpRequestCallback toGetTargets = new JsonHttpRequestCallback(){
+        @Override
+        public void onStart() {
+            Log.i("Amlegend","正在获取周围目标"+PCM.getTargets);
+        }
+        @Override
+        protected void onSuccess(JSONObject jsonObject) {
+            super.onSuccess(jsonObject);
+            Log.i("Amlegend","返回的搜索数据是："+JsonFormatUtils.formatJson(jsonObject.toJSONString()));
+            searchTarget(jsonObject);
+        }
+        //请求失败（服务返回非法JSON、服务器异常、网络异常）
+        @Override
+        public void onFailure(int errorCode, String msg) {
+            Log.i("Amlegend","网络失败");
+        }
+        //请求网络结束
+        @Override
+        public void onFinish() {
+
+        }
+    };
+    //获取目标信息
+    private JsonHttpRequestCallback toBoomTarget = new JsonHttpRequestCallback(){
+        @Override
+        public void onStart() {
+            Log.i("Amlegend","消灭目标"+PCM.boomTarget);
+        }
+        @Override
+        protected void onSuccess(JSONObject jsonObject) {
+            super.onSuccess(jsonObject);
+            Log.i("Amlegend","返回的搜索数据是："+JsonFormatUtils.formatJson(jsonObject.toJSONString()));
+            if(jsonObject.getInteger("code")==0){
+                current_choice=-1;
+                dialog_ko();
+            }
         }
         //请求失败（服务返回非法JSON、服务器异常、网络异常）
         @Override
