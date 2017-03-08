@@ -83,7 +83,18 @@ public class Ampage extends Activity {
         mylocation=(TextView) findViewById(R.id.info_location);
         myname=(TextView) findViewById(R.id.i_name);
         myscore=(TextView) findViewById(R.id.i_score);
+        ImageView btn_info=(ImageView)findViewById(R.id.btn_info);
 
+        //个人信息页面
+        btn_info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(getApplicationContext(),Aminfo.class);
+                startActivity(intent);
+                finish();
+            }
+        });
         //搜索按钮，默认无法点击
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
