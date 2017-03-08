@@ -38,7 +38,7 @@ class AttackController extends BaseController
 			$result=DB::table("attack_location")->insert(['user_id'=>$userId,'lat'=>$lat,'lot'=>$lot,'flash_time'=>$time]);
 		}
 		
-		$result=DB::select("select * from attack_location where user_id <> ".$userId." and ".$lot_max.">lot and lot>".$lot_min." and ".$lat_max.">lat and lat>".$lat_min." order by flash_time desc limit 0,5");
+		$result=DB::select("select a.*,b.status from attack_location as a INNER JOIN user_info as b on a.user_id=b.id and b.status=0 and a.user_id <> ".$userId." and ".$lot_max.">a.lot and a.lot>".$lot_min." and ".$lat_max.">a.lat and a.lat>".$lat_min." order by a.flash_time desc limit 0,5");
 		
 		$data['code']=0;
 		$data['msg']="";
