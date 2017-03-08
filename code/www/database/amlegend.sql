@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50540
 File Encoding         : 65001
 
-Date: 2017-03-07 17:49:42
+Date: 2017-03-08 17:21:07
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -56,5 +56,7 @@ CREATE TABLE `user_info` (
   `score` int(10) DEFAULT '0' COMMENT '总成绩',
   `failure` int(10) DEFAULT '0' COMMENT '被攻击总数',
   `status` int(1) DEFAULT '0' COMMENT '状态0正常1锁定2击毙',
+  `tools` int(10) DEFAULT '0' COMMENT '道具个数',
+  `flash_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
