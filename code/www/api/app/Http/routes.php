@@ -27,3 +27,7 @@ $app->get('attack/searchTarget','AttackController@searchTarget');
 $app->post('attack/boomTarget','AttackController@boomTarget');
 //攻击相关api
 $app->get('attack/boomTarget','AttackController@boomTarget');
+//获取用户信息
+$app->post('user/userInfo','UserController@userInfo');
+//获取用户信息
+$app->get('user/userInfo','UserController@userInfo');

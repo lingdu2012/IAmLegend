@@ -34,11 +34,14 @@ class UserController extends BaseController
 		if(count($result)>0){
 			//判断是否赠送道具
 			$date=date('Y-m-d',time());
-			$prev_date=date('Y-m-d',$result[0]['flash_time']);
+			$flash_date=$result[0]->flash_time;
+			$prev_date=date('Y-m-d',strtotime($flash_date));
+			
 			if($date != $prev_date){
-				$result[0]['tools']=$result[0]['tools']+1;
-				$result[0]['flash_time']=date('Y-m-d H:i:s',time());
-				$update_result=DB::table('user_info')->where("id",'=',$result[0]['id'])->update(['tools' => $result[0]['tools'],'flash_time'=>$result[0]['flash_time']]);
+				$tools_num=$result[0]->tools;
+				$result[0]->tools = $tools_num + 1;
+				$result[0]->flash_time = date('Y-m-d H:i:s',time());
+				$update_result=DB::table('user_info')->where("id",'=',$result[0]->id)->update(['tools' => $result[0]->tools,'flash_time'=>$result[0]->flash_time]);
 			}
 			//直接返回信息
 			$data['result']=$result;
@@ -54,5 +57,38 @@ class UserController extends BaseController
 		
 		return response()->json($data);
 		
+	}
+	/**
+	 * 获取用户信息
+	 * 
+	 */
+	public function userInfo(Request $request){
+		
+		$data=array();
+		$userId=$request->input("userId");
+		$result=DB::table("user_info")->where("id",'=',$userId)->select('id','user_name','score','failure','status','tools','flash_time')->get();
+		
+		$describe=$result[0]->status;
+
+		switch($describe){
+			case 0:
+				$result[0]->statusDesc ='活跃中';
+			break;
+			case 1:
+				$result[0]->statusDesc ='被锁定';
+			break;
+			case 2:
+				$result[0]->statusDesc ='等待复活';
+			break;
+			default:
+				$result[0]->statusDesc ='活跃中';
+				break;
+		}
+		
+		$data['code']=0;
+		$data['msg']='';
+		$data['result']=$result;
+		
+		return response()->json($data);
 	}
 }
