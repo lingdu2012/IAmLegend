@@ -45,7 +45,7 @@
         android:layout_marginTop="40dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/app_version"
-        android:text="孤独枪手"
+        android:text=" "
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         />
@@ -74,7 +74,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_name"
-        android:text="0"
+        android:text=" "
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         />
@@ -95,7 +95,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_score"
-        android:text="1"
+        android:text=" "
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         />
@@ -116,7 +116,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_failure"
-        android:text="10"
+        android:text=" "
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         />
@@ -137,7 +137,7 @@
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_boom"
-        android:text="存活中"
+        android:text=" "
         android:textColor="@color/colorWhite"
         android:textSize="16sp"
         />

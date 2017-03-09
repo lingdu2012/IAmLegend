@@ -1,5 +1,6 @@
 package cn.angeldo.amlegend;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -7,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,6 +52,7 @@ public class Ampage extends Activity {
     private LocationApplication m;
     private SimpleDraweeView user_logo;//用户头像
     private TextView info_tip;//提示信息
+    private TextView boom_num;
     private TextView mylocation;//我的地址
     private TextView myname;//我的名字
     private TextView myscore;//我的成绩
@@ -64,6 +68,7 @@ public class Ampage extends Activity {
     private int isInited=0;
     //初始化类
     private Pcmm PCM=new Pcmm();
+    private JSONObject jsonInfo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,7 @@ public class Ampage extends Activity {
         myname=(TextView) findViewById(R.id.i_name);
         myscore=(TextView) findViewById(R.id.i_score);
         ImageView btn_info=(ImageView)findViewById(R.id.btn_info);
+        boom_num=(TextView)findViewById(R.id.boom_num);
 
         //个人信息页面
         btn_info.setOnClickListener(new View.OnClickListener() {
@@ -293,6 +299,34 @@ public class Ampage extends Activity {
             e.printStackTrace();
         }
     }
+    //更新用户信息
+    protected void updateUser(){
+        JSONArray objArray = JSONObject.parseArray(jsonInfo.getString("result"));
+        JSONObject obj = (JSONObject) objArray.get(0);
+        String userId=obj.getString("id");
+        SharedPreferences.Editor editor = getSharedPreferences("Amlegend", Context.MODE_PRIVATE).edit();
+        editor.putString("userId",userId);
+        editor.commit();
+
+        myname.setText(obj.getString("user_name"));
+        myscore.setText(obj.getString("score"));
+        boom_num.setText(obj.getString("tools"));
+
+        Log.i("Amlegend","返回的用户id是："+userId);
+        isInited=1;
+        judgeUser(obj.getInteger("status"));
+    }
+    //判断用户当前状态
+    protected void judgeUser(int userStatus) {
+        //如果处于等待复活中
+        if(userStatus==2){
+
+
+        }else if(userStatus==1){//被锁定
+
+
+        }
+    }
     //退出提示
     protected void dialog_loginout() {
         new AlertDialog.Builder(this)
@@ -338,17 +372,8 @@ public class Ampage extends Activity {
         protected void onSuccess(JSONObject jsonObject) {
             super.onSuccess(jsonObject);
             Log.i("Amlegend","返回的用户id是："+JsonFormatUtils.formatJson(jsonObject.toJSONString()));
-            JSONArray objArray = JSONObject.parseArray(jsonObject.getString("result"));
-            JSONObject obj = (JSONObject) objArray.get(0);
-            String userId=obj.getString("id");
-            SharedPreferences.Editor editor = getSharedPreferences("Amlegend", Context.MODE_PRIVATE).edit();
-            editor.putString("userId",userId);
-            editor.commit();
-            myname.setText(obj.getString("user_name"));
-            myscore.setText(obj.getString("score"));
-
-            Log.i("Amlegend","返回的用户id是："+userId);
-            isInited=1;
+            jsonInfo=jsonObject;
+            mHandler.obtainMessage(0).sendToTarget();
         }
         //请求失败（服务返回非法JSON、服务器异常、网络异常）
         @Override
@@ -408,6 +433,20 @@ public class Ampage extends Activity {
         @Override
         public void onFinish() {
 
+        }
+    };
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    updateUser();
+                    break;
+                case 1:
+
+                    break;
+            }
         }
     };
 }
