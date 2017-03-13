@@ -51,17 +51,28 @@ class AttackController extends BaseController
 	 * 
 	 * */
 	public function boomTarget(Request $request){
+		//获取参数	
 		$userId=$request->input("userId");
 		$lat=$request->input("lat");
 		$lot=$request->input("lot");
 		$killerId=$request->input("killerId");
-		
+		//检查是否道具充足
+		$result=DB::table("user_info")->where("id",'=',$killerId)->get();
+		$tools_num=$result[0]->tools;
+		if($tools_num <= 0){
+			abort(404);
+			return ;
+		}
+		//进行操作处理
 		$data=array();
 		$time=date('Y-m-d H:i:s',time());
-		
+		//写入攻击事件
 		$result=DB::table("attack_event")->insert(['user_id'=>$userId,'lat'=>$lat,'lot'=>$lot,'failure_time'=>$time,'killer_id'=>$killerId]);
-		
+		//进行成绩处理
+		//攻击者
 		$result=DB::table('user_info')->where("id",'=',$killerId)->increment('score');
+		$result=DB::table('user_info')->where("id",'=',$killerId)->increment('tools');
+		//被攻击者
 		$result=DB::table('user_info')->where("id",'=',$userId)->increment('failure');
 		$result=DB::table('user_info')->where("id",'=',$userId)->update(['status' => 2]);
 		
@@ -70,7 +81,6 @@ class AttackController extends BaseController
 		$data['result']=$result;
 		
 		return response()->json($data);
-		
 		
 	}
 }
