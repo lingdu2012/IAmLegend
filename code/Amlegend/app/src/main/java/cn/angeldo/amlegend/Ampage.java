@@ -235,6 +235,10 @@ public class Ampage extends Activity {
     //消灭目标
     private void boomTarget(){
         Log.i("消灭的id是", "：" + current_choice);
+        if(current_choice==-1){
+            Toast.makeText(getApplicationContext(), "请选择攻击目标", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int targetNum=boom_area.getChildCount();
         for(int i=0;i<targetNum;i++){
             int removeId=boom_area.getChildAt(i).getId();
@@ -313,19 +317,24 @@ public class Ampage extends Activity {
         boom_num.setText(obj.getString("tools"));
 
         Log.i("Amlegend","返回的用户id是："+userId);
+        Log.i("Amlegend","返回的用户状态是："+obj.getInteger("status"));
         isInited=1;
-        judgeUser(obj.getInteger("status"));
+        String status=obj.getString("status");
+        if(status!=null){
+            judgeUser(Integer.parseInt(status));
+        }
     }
     //判断用户当前状态
     protected void judgeUser(int userStatus) {
         //如果处于等待复活中
-        if(userStatus==2){
-
-
-        }else if(userStatus==1){//被锁定
-
-
-        }
+        Log.i("Amlegend","用户状态是："+userStatus);
+//        if(userStatus==2){
+//
+//
+//        }else if(userStatus==1){//被锁定
+//
+//
+//        }
     }
     //退出提示
     protected void dialog_loginout() {
