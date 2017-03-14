@@ -328,13 +328,13 @@ public class Ampage extends Activity {
     protected void judgeUser(int userStatus) {
         //如果处于等待复活中
         Log.i("Amlegend","用户状态是："+userStatus);
-//        if(userStatus==2){
-//
-//
-//        }else if(userStatus==1){//被锁定
-//
-//
-//        }
+        if(userStatus==2){
+
+
+        }else if(userStatus==1){//被锁定
+
+
+        }
     }
     //退出提示
     protected void dialog_loginout() {
@@ -431,6 +431,7 @@ public class Ampage extends Activity {
             if(jsonObject.getInteger("code")==0){
                 current_choice=-1;
                 dialog_ko();
+                userInit();
             }
         }
         //请求失败（服务返回非法JSON、服务器异常、网络异常）
