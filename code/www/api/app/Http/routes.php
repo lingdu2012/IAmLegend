@@ -14,20 +14,19 @@
 $app->get('/', function() use ($app) {
     return $app->welcome();
 });
-//用户相关api
+/****用户相关api*****/
 $app->get('user/register','UserController@register');
-
+//初始化用户信息
 $app->get('user/userInit','UserController@userInit');
 $app->post('user/userInit','UserController@userInit');
-//攻击相关api
-$app->post('attack/searchTarget','AttackController@searchTarget');
-//攻击相关api
-$app->get('attack/searchTarget','AttackController@searchTarget');
-//攻击相关api
-$app->post('attack/boomTarget','AttackController@boomTarget');
-//攻击相关api
-$app->get('attack/boomTarget','AttackController@boomTarget');
 //获取用户信息
 $app->post('user/userInfo','UserController@userInfo');
-//获取用户信息
 $app->get('user/userInfo','UserController@userInfo');
+
+/****攻击相关api*****/
+//搜索目标
+$app->post('attack/searchTarget','AttackController@searchTarget');
+$app->get('attack/searchTarget','AttackController@searchTarget');
+//攻击目标
+$app->post('attack/boomTarget','AttackController@boomTarget');
+$app->get('attack/boomTarget','AttackController@boomTarget');

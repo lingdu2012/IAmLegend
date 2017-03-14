@@ -21,7 +21,7 @@ class UserController extends BaseController
 	 * 有则直接返回
 	 */
 	public function userInit(Request $request){
-       
+        //获取参数
 	    $markId=$request->input("markId");
 	    $lat=$request->input("lat");
 	    $lot=$request->input("lot");
@@ -30,9 +30,10 @@ class UserController extends BaseController
 			abort(404);
 			return ;
 		}
+		//检查用户是否已存在
 		$result=DB::table("user_info")->where("mark_id",'=',$markId)->select('id', 'mark_id','user_name','score','tools','flash_time')->get();
 		if(count($result)>0){
-			//判断是否赠送道具
+			//判断是否赠送道具，每天加1
 			$date=date('Y-m-d',time());
 			$flash_date=$result[0]->flash_time;
 			$prev_date=date('Y-m-d',strtotime($flash_date));
@@ -45,7 +46,7 @@ class UserController extends BaseController
 			}
 			//直接返回信息
 			$data['result']=$result;
-		}else{
+		}else{//注册新用户
 			//注册时间
 			$time=date('Y-m-d H:i:s',time());
 			$result_id=DB::table("user_info")->insertGetId(['mark_id'=>$markId,'register_time'=>$time,'register_lat'=>$lat,'register_lot'=>$lot,'status'=>0,'tools'=>1,'flash_time'=>$time]);
@@ -56,7 +57,6 @@ class UserController extends BaseController
 		$data['msg']='';
 		
 		return response()->json($data);
-		
 	}
 	/**
 	 * 获取用户信息
@@ -66,8 +66,9 @@ class UserController extends BaseController
 		
 		$data=array();
 		$userId=$request->input("userId");
+		//获取用户信息
 		$result=DB::table("user_info")->where("id",'=',$userId)->select('id','user_name','score','failure','status','tools','flash_time')->get();
-		
+		//判断用户状态，并添加状态展示用语
 		$describe=$result[0]->status;
 
 		switch($describe){

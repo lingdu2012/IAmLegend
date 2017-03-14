@@ -12,7 +12,7 @@ class AttackController extends BaseController
 	/**
 	 * 搜索目标
 	 * 
-	 * */
+	 */
 	public function searchTarget(Request $request){
 		$userId=$request->input("userId");
 		$lat=$request->input("lat");
@@ -49,7 +49,7 @@ class AttackController extends BaseController
     /**
 	 * 消灭目标
 	 * 
-	 * */
+	 */
 	public function boomTarget(Request $request){
 		//获取参数	
 		$userId=$request->input("userId");
@@ -71,7 +71,7 @@ class AttackController extends BaseController
 		//进行成绩处理
 		//攻击者
 		$result=DB::table('user_info')->where("id",'=',$killerId)->increment('score');
-		$result=DB::table('user_info')->where("id",'=',$killerId)->increment('tools');
+		$result=DB::table('user_info')->where("id",'=',$killerId)->decrement('tools');
 		//被攻击者
 		$result=DB::table('user_info')->where("id",'=',$userId)->increment('failure');
 		$result=DB::table('user_info')->where("id",'=',$userId)->update(['status' => 2]);
