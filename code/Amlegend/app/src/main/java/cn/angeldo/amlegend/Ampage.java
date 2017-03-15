@@ -41,11 +41,13 @@ import static cn.angeldo.amlegend.R.id.itool;
 
 /**
  * 功能描述：
+ * @ 检查权限
  * @ 获取当前经纬度
  * @ 初始化用户信息
  * @ 扫描攻击区域
  * @ 锁定攻击目标
  * @ 实施攻击
+ * @ 更新用户信息
  * */
 public class Ampage extends Activity {
     private LocationClient mLocationClient;
@@ -146,7 +148,15 @@ public class Ampage extends Activity {
                 boomTarget();
             }
         });
-
+        checkRights();
+    }
+    //检查权限
+    private void checkRights(){
+        SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
+        int tipInfo = pc.getInt("tipInfo",0);
+        if(tipInfo==0){
+            dialog_rights();
+        }
         try {
             startMap();
         } catch (Exception e) {
@@ -162,7 +172,7 @@ public class Ampage extends Activity {
         loption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置定位模式
         loption.setCoorType("bd09ll");//返回的定位结果是百度经纬度，默认值gcj02
         loption.setOpenGps(true);//可选，默认false,设置是否使用gps
-        loption.setScanSpan(50000);//设置发起定位请求的间隔时间为50000ms
+        loption.setScanSpan(5000);//设置发起定位请求的间隔时间为50000ms
         loption.setIsNeedAddress(true);
         loption.setIsNeedLocationDescribe(true);
         loption.setIgnoreKillProcess(false);
@@ -359,6 +369,20 @@ public class Ampage extends Activity {
                             }
                         }).show();
     }
+    //退出提示
+    protected void dialog_rights() {
+        new AlertDialog.Builder(this)
+                .setTitle("喂！")
+                .setMessage("请保证英雄成长所需要的权限！")
+                .setPositiveButton("好的，知道了", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        SharedPreferences.Editor editor = getSharedPreferences("Amlegend", Context.MODE_PRIVATE).edit();
+                        editor.putInt("tipInfo",1);
+                        editor.commit();
+                        dialoginterface.dismiss();
+                    }
+                }).show();
+    }
     //消灭提示
     protected void dialog_ko() {
         new AlertDialog.Builder(this)
@@ -418,7 +442,7 @@ public class Ampage extends Activity {
 
         }
     };
-    //获取目标信息
+    //攻击目标
     private JsonHttpRequestCallback toBoomTarget = new JsonHttpRequestCallback(){
         @Override
         public void onStart() {
