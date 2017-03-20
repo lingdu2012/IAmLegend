@@ -30,3 +30,7 @@ $app->get('attack/searchTarget','AttackController@searchTarget');
 //攻击目标
 $app->post('attack/boomTarget','AttackController@boomTarget');
 $app->get('attack/boomTarget','AttackController@boomTarget');
+/****提示信息相关api*****/
+//提示信息
+$app->post('tip/tipInfo','TipController@tipInfo');
+$app->get('tip/tipInfo','TipController@tipInfo');

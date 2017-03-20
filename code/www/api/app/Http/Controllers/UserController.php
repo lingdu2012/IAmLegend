@@ -31,7 +31,7 @@ class UserController extends BaseController
 			return ;
 		}
 		//检查用户是否已存在
-		$result=DB::table("user_info")->where("mark_id",'=',$markId)->select('id', 'mark_id','user_name','score','tools','flash_time')->get();
+		$result=DB::table("user_info")->where("mark_id",'=',$markId)->select('id', 'mark_id','user_name','score','tools','flash_time','status')->get();
 		if(count($result)>0){
 			//判断是否赠送道具，每天加1
 			$date=date('Y-m-d',time());
@@ -51,7 +51,7 @@ class UserController extends BaseController
 			$time=date('Y-m-d H:i:s',time());
 			$result_id=DB::table("user_info")->insertGetId(['mark_id'=>$markId,'register_time'=>$time,'register_lat'=>$lat,'register_lot'=>$lot,'status'=>0,'tools'=>1,'flash_time'=>$time]);
 			
-			$data['result']=$result=DB::table("user_info")->where("id",'=',$result_id)->select('id', 'mark_id','user_name','score','tools','flash_time')->get();
+			$data['result']=$result=DB::table("user_info")->where("id",'=',$result_id)->select('id', 'mark_id','user_name','score','tools','flash_time','status')->get();
 		}
 		$data['code']=0;
 		$data['msg']='';
