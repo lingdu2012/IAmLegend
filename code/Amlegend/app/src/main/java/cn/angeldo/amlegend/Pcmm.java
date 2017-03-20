@@ -15,5 +15,7 @@ public class Pcmm {
     public static String boomTarget=serverUrl+"attack/boomTarget";
     //获取用户信息
     public static String userInfo=serverUrl+"user/userInfo";
+    //获取提示信息
+    public static String tipInfo=serverUrl+"tip/tipInfo";
 
 }

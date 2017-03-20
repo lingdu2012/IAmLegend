@@ -68,6 +68,8 @@ public class Ampage extends Activity {
     private String mylat;
     private String mylot;
     private int isInited=0;
+    //当前提示信息
+    private String tipInfo;
     //初始化类
     private Pcmm PCM=new Pcmm();
     private JSONObject jsonInfo;
@@ -138,6 +140,8 @@ public class Ampage extends Activity {
                 if(isInited==0 && mylat.length()>0 && mylot.length()>0) {
                     //初始化用户
                     userInit();
+                    //启动消息线程
+                    new Thread(new msgThread()).start();
                 }
             }
         });
@@ -339,10 +343,8 @@ public class Ampage extends Activity {
         //如果处于等待复活中
         Log.i("Amlegend","用户状态是："+userStatus);
         if(userStatus==2){
-
-
+            dialog_dead();
         }else if(userStatus==1){//被锁定
-
 
         }
     }
@@ -369,17 +371,33 @@ public class Ampage extends Activity {
                             }
                         }).show();
     }
-    //退出提示
+    //检查权限提示
     protected void dialog_rights() {
         new AlertDialog.Builder(this)
                 .setTitle("喂！")
-                .setMessage("请保证英雄成长所需要的权限！")
+                .setMessage("请保证自己成长所需要的权限！")
                 .setPositiveButton("好的，知道了", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
                         SharedPreferences.Editor editor = getSharedPreferences("Amlegend", Context.MODE_PRIVATE).edit();
                         editor.putInt("tipInfo",1);
                         editor.commit();
                         dialoginterface.dismiss();
+                    }
+                }).show();
+    }
+    //检查权限提示
+    protected void dialog_dead() {
+        new AlertDialog.Builder(this)
+                .setTitle("喂！")
+                .setMessage("你被击毙了，等待复活吧！")
+                .setPositiveButton("好的，知道了", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialoginterface, int i) {
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        android.os.Process.killProcess(android.os.Process
+                                .myPid());
                     }
                 }).show();
     }
@@ -469,6 +487,33 @@ public class Ampage extends Activity {
 
         }
     };
+    //获取提示信息
+    private JsonHttpRequestCallback toTipInfo = new JsonHttpRequestCallback(){
+        @Override
+        public void onStart() {
+            Log.i("Amlegend","获取信息"+PCM.tipInfo);
+        }
+        @Override
+        protected void onSuccess(JSONObject jsonObject) {
+            super.onSuccess(jsonObject);
+            Log.i("Amlegend","返回的信息是："+JsonFormatUtils.formatJson(jsonObject.toJSONString()));
+            if(jsonObject.getInteger("code")==0){
+                JSONArray objArray = JSONObject.parseArray(jsonObject.getString("result"));
+                tipInfo=objArray.getString(0);
+                mHandler.obtainMessage(1).sendToTarget();
+            }
+        }
+        //请求失败（服务返回非法JSON、服务器异常、网络异常）
+        @Override
+        public void onFailure(int errorCode, String msg) {
+            Log.i("Amlegend","网络失败");
+        }
+        //请求网络结束
+        @Override
+        public void onFinish() {
+
+        }
+    };
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
@@ -478,9 +523,40 @@ public class Ampage extends Activity {
                     updateUser();
                     break;
                 case 1:
-
+                    Log.i("Amlegend","更新信息");
+                    info_tip.setText(tipInfo);
                     break;
             }
         }
     };
+    //独立线程获取提示信息
+    public class msgThread implements Runnable {
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            while (true) {
+                try {
+
+                    Log.i("Amlegend","开始启动获取提示信息");
+                    SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
+                    String userId = pc.getString("userId", "none");
+                    //创建网络请求
+                    RequestParams params = new RequestParams();
+                    //表单数据
+                    params.addFormDataPart("userId",userId);
+                    params.addFormDataPart("lat",mylat);
+                    params.addFormDataPart("lot",mylot);
+                    try {
+                        HttpRequest.post(PCM.tipInfo, params,toTipInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Thread.sleep(20000);// 执行完毕休眠，线程暂停20秒，单位毫秒
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
