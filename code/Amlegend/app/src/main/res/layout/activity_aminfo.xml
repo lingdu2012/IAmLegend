@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@color/colorBlue">
+    android:background="@drawable/info_bg">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/my_tx"
@@ -27,12 +27,12 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_tx"
         android:text="V 1.0"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         android:text="昵称："
         android:layout_above="@+id/my_score"
@@ -46,7 +46,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/app_version"
         android:text=" "
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         />
     <ImageView
@@ -60,7 +60,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         android:text="成功："
         android:layout_alignBaseline="@+id/my_score"
@@ -75,13 +75,13 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_name"
         android:text=" "
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         android:text="失败："
         android:layout_alignBaseline="@+id/my_failure"
@@ -96,13 +96,13 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_score"
         android:text=" "
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         android:text="道具："
         android:layout_alignBaseline="@+id/my_boom"
@@ -117,13 +117,13 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_failure"
         android:text=" "
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         android:text="状态："
         android:layout_alignBaseline="@+id/my_status"
@@ -138,13 +138,13 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_boom"
         android:text=" "
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         android:text="存活："
         android:layout_alignBaseline="@+id/my_time"
@@ -159,7 +159,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/my_status"
         android:text="00-00-00"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:textSize="16sp"
         />
 </RelativeLayout>
