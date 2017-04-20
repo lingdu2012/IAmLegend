@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50540
 File Encoding         : 65001
 
-Date: 2017-03-20 14:17:12
+Date: 2017-04-20 14:01:08
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,7 +27,7 @@ CREATE TABLE `attack_event` (
   `lot` varchar(255) DEFAULT NULL COMMENT '经度',
   `killer_id` bigint(20) DEFAULT NULL COMMENT '杀手id',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for attack_location
@@ -40,7 +40,7 @@ CREATE TABLE `attack_location` (
   `lot` varchar(255) DEFAULT NULL COMMENT '经度',
   `flash_time` datetime DEFAULT NULL COMMENT '刷新时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user_info
@@ -59,4 +59,4 @@ CREATE TABLE `user_info` (
   `tools` int(10) DEFAULT '0' COMMENT '道具个数',
   `flash_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
