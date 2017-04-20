@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -90,14 +92,18 @@ public class Ampage extends Activity {
         //加载页面
         setContentView(R.layout.activity_ampage);
         //初始化音效对象
-        AudioAttributes audioAttrib = new AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build();
+        if(Build.VERSION.SDK_INT>=21) {
+            AudioAttributes audioAttrib = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
 
-        SoundPool.Builder builder2 = new SoundPool.Builder();
-        builder2.setAudioAttributes(audioAttrib).setMaxStreams(2);
-        this.pool = builder2.build();
+            SoundPool.Builder builder2 = new SoundPool.Builder();
+            builder2.setAudioAttributes(audioAttrib).setMaxStreams(2);
+            this.pool = builder2.build();
+        }else{
+            this.pool=new SoundPool(2, AudioManager.STREAM_MUSIC,0);
+        }
         //加载UI
         user_logo = (SimpleDraweeView)findViewById(R.id.my_tx);
         boom_tool=(ImageView)findViewById(itool);

@@ -59,7 +59,7 @@ class AttackController extends BaseController
 		//检查当前状态
 		$result=DB::table("user_info")->where("id",'=',$killerId)->get();
 		$status=$result[0]->status;
-		if($status <= 0){
+		if($status == 2){
 			abort(404);
 			return ;
 		}
