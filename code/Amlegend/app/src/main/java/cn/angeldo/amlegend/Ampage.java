@@ -59,7 +59,7 @@ public class Ampage extends Activity {
     private SimpleDraweeView user_logo;//用户头像
     private ImageView mybird;//小鸟
     private TextView info_tip;//提示信息
-    private TextView boom_num;
+    private TextView boom_num;//道具数量
     private TextView mylocation;//我的地址
     private TextView myname;//我的名字
     private TextView myscore;//我的成绩
@@ -89,7 +89,7 @@ public class Ampage extends Activity {
         OkHttpFinal.getInstance().init(builder.build());
         //加载页面
         setContentView(R.layout.activity_ampage);
-
+        //初始化音效对象
         AudioAttributes audioAttrib = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -98,7 +98,7 @@ public class Ampage extends Activity {
         SoundPool.Builder builder2 = new SoundPool.Builder();
         builder2.setAudioAttributes(audioAttrib).setMaxStreams(2);
         this.pool = builder2.build();
-
+        //加载UI
         user_logo = (SimpleDraweeView)findViewById(R.id.my_tx);
         boom_tool=(ImageView)findViewById(itool);
         btn_search=(ImageView)findViewById(R.id.btn_search);
@@ -124,25 +124,8 @@ public class Ampage extends Activity {
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    final int aid=pool.load(getApplicationContext(),R.raw.music_scan,1);
-                    pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                        @Override
-                        public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
-                            pool.play(aid, 1F, 1F, 1, 0, 1F);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                mybird.setAnimation(null);
-                mybird.setVisibility(View.VISIBLE);
-                Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),R.anim.my_anim);
-                animation.setRepeatCount(1);//设置重复次数
-                animation.setFillAfter(true);
-                mybird.setAnimation(animation);
-                animation.start();
-                if(mylat.length()>0 && mylot.length()>0){
+                if(mylat.length()>0 && mylot.length()>0 && !mylocation.getText().toString().equals("null")){
+                    musicEffect(0);
                     btn_search.setClickable(false);
                     boom_area.removeAllViews();
                     scanTarget();
@@ -170,7 +153,7 @@ public class Ampage extends Activity {
                 mylat = pc.getString("plat", "none");
                 mylot = pc.getString("plot", "none");
                 //仅初始化一次用户信息
-                if(isInited==0 && mylat.length()>0 && mylot.length()>0) {
+                if(isInited==0 && mylat.length()>0 && mylot.length()>0 && !mylocation.getText().toString().equals("null")) {
                     //初始化用户
                     userInit();
                     //启动消息线程
@@ -209,7 +192,7 @@ public class Ampage extends Activity {
         loption.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//设置定位模式
         loption.setCoorType("bd09ll");//返回的定位结果是百度经纬度，默认值gcj02
         loption.setOpenGps(true);//可选，默认false,设置是否使用gps
-        loption.setScanSpan(5000);//设置发起定位请求的间隔时间为50000ms
+        loption.setScanSpan(5000);//设置发起定位请求的间隔时间为5000ms
         loption.setIsNeedAddress(true);
         loption.setIsNeedLocationDescribe(true);
         loption.setIgnoreKillProcess(false);
@@ -286,6 +269,10 @@ public class Ampage extends Activity {
             Toast.makeText(getApplicationContext(), "请选择攻击目标", Toast.LENGTH_SHORT).show();
             return;
         }
+        if(Integer.parseInt(boom_num.getText().toString())<=0){
+            Toast.makeText(getApplicationContext(), "弹药不足！", Toast.LENGTH_SHORT).show();
+            return;
+        }
         int targetNum=boom_area.getChildCount();
         for(int i=0;i<targetNum;i++){
             int removeId=boom_area.getChildAt(i).getId();
@@ -334,6 +321,10 @@ public class Ampage extends Activity {
     protected void userInit(){
         TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         String phoneIME = TelephonyMgr.getDeviceId();
+        if(Double.valueOf(phoneIME)<=0){
+            Toast.makeText(getApplicationContext(), "请检查软件权限设置", Toast.LENGTH_SHORT).show();
+            return ;
+        }
         Log.i("本机标识是", "：" + phoneIME);
         Log.i("本机标识lat是", "：" + mylat);
         Log.i("本机标识lot是", "：" + mylot);
@@ -381,6 +372,40 @@ public class Ampage extends Activity {
 
         }
     }
+    //按键音效
+    protected void musicEffect(int mtype){
+        //扫描音效
+        if(mtype==0) {
+            try {
+                final int aid = pool.load(getApplicationContext(), R.raw.music_scan, 1);
+                pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                    @Override
+                    public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
+                        pool.play(aid, 1F, 1F, 1, 0, 1F);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mybird.setAnimation(null);
+            mybird.setVisibility(View.VISIBLE);
+            Animation animation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.my_anim);
+            animation.setRepeatCount(1);//设置重复次数
+            animation.setFillAfter(true);
+            mybird.setAnimation(animation);
+            animation.start();
+        }
+        //攻击音效
+        if(mtype==1){
+            final int aid=pool.load(getApplicationContext(),R.raw.music_boom,1);
+            pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+                @Override
+                public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
+                    pool.play(aid, 1F, 1F, 1, 0, 1F);
+                }
+            });
+        }
+    }
     //退出提示
     protected void dialog_loginout() {
         new AlertDialog.Builder(this)
@@ -407,7 +432,7 @@ public class Ampage extends Activity {
     //检查权限提示
     protected void dialog_rights() {
         new AlertDialog.Builder(this)
-                .setTitle("喂！")
+                .setTitle("嗨！")
                 .setMessage("请保证自己成长所需要的权限！")
                 .setPositiveButton("好的，知道了", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
@@ -421,7 +446,7 @@ public class Ampage extends Activity {
     //检查权限提示
     protected void dialog_dead() {
         new AlertDialog.Builder(this)
-                .setTitle("喂！")
+                .setTitle("哇哦！")
                 .setMessage("你被击毙了，等待复活吧！")
                 .setPositiveButton("好的，知道了", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialoginterface, int i) {
@@ -505,14 +530,7 @@ public class Ampage extends Activity {
             Log.i("Amlegend","返回的搜索数据是："+JsonFormatUtils.formatJson(jsonObject.toJSONString()));
             if(jsonObject.getInteger("code")==0){
                 current_choice=-1;
-                final int aid=pool.load(getApplicationContext(),R.raw.music_boom,1);
-                pool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
-                    @Override
-                    public void onLoadComplete(SoundPool arg0, int arg1, int arg2) {
-                        pool.play(aid, 1F, 1F, 1, 0, 1F);
-                    }
-                });
-
+                musicEffect(1);
                 dialog_ko();
                 userInit();
             }
