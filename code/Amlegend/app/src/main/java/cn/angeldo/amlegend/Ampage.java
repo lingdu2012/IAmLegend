@@ -603,7 +603,9 @@ public class Ampage extends Activity {
             while (true) {
                 try {
                     //定时检查用户状态
-                    userInit();
+                    if(isInited>0) {
+                        userInit();
+                    }
                     //定时获取广播信息
                     Log.i("Amlegend","开始启动获取提示信息");
                     SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);

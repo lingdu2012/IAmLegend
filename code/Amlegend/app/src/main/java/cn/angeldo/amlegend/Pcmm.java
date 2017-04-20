@@ -6,7 +6,8 @@ package cn.angeldo.amlegend;
 
 public class Pcmm {
     //主服务地址
-    public static String serverUrl="http://10.9.0.239:8104/";
+    //public static String serverUrl="http://10.9.0.239:8104/";
+    public static String serverUrl="http://api.amlegend.imgrids.com/";
     //初始化用户
     public static String initUser=serverUrl+"user/userInit";
     //获取目标信息
