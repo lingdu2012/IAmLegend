@@ -56,6 +56,13 @@ class AttackController extends BaseController
 		$lat=$request->input("lat");
 		$lot=$request->input("lot");
 		$killerId=$request->input("killerId");
+		//检查当前状态
+		$result=DB::table("user_info")->where("id",'=',$killerId)->get();
+		$status=$result[0]->status;
+		if($status <= 0){
+			abort(404);
+			return ;
+		}
 		//检查是否道具充足
 		$result=DB::table("user_info")->where("id",'=',$killerId)->get();
 		$tools_num=$result[0]->tools;

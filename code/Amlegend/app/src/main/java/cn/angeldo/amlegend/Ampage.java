@@ -368,6 +368,7 @@ public class Ampage extends Activity {
         Log.i("Amlegend","用户状态是："+userStatus);
         if(userStatus==2){
             dialog_dead();
+            return;
         }else if(userStatus==1){//被锁定
 
         }
@@ -595,7 +596,9 @@ public class Ampage extends Activity {
             // TODO Auto-generated method stub
             while (true) {
                 try {
-
+                    //定时检查用户状态
+                    userInit();
+                    //定时获取广播信息
                     Log.i("Amlegend","开始启动获取提示信息");
                     SharedPreferences pc = getSharedPreferences("Amlegend",Context.MODE_PRIVATE);
                     String userId = pc.getString("userId", "none");
@@ -611,6 +614,7 @@ public class Ampage extends Activity {
                         e.printStackTrace();
                     }
                     Thread.sleep(20000);// 执行完毕休眠，线程暂停20秒，单位毫秒
+
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

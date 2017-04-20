@@ -22,17 +22,35 @@ class UserController extends BaseController
 	 */
 	public function userInit(Request $request){
         //获取参数
-	    $markId=$request->input("markId");
-	    $lat=$request->input("lat");
-	    $lot=$request->input("lot");
+		$markId=$request->input("markId");
+		$lat=$request->input("lat");
+		$lot=$request->input("lot");
 			
 		if(!$markId){
 			abort(404);
 			return ;
 		}
+
 		//检查用户是否已存在
 		$result=DB::table("user_info")->where("mark_id",'=',$markId)->select('id', 'mark_id','user_name','score','tools','flash_time','status')->get();
+		//用户存在
 		if(count($result)>0){
+			//判断当前是否复活
+			$istatus=$result[0]->status;
+			if($istatus==2){
+				$id=$result[0]->id;
+				//获取上次被击毙时间
+				$attack_log=DB::table("attack_event")->where('user_id','=',$id)->get();
+				$failure_time=$attack_log[0]->failure_time;
+				$time=time();
+				//计算间隔时间
+				$deadtime=$time-strtotime($failure_time);
+				//如果死亡时间超过1小时，复活！
+				if($deadtime>3600){
+					$rest=DB::table("user_info")->where("mark_id",'=',$markId)->update(['status'=>0]);
+				}
+			}
+			
 			//判断是否赠送道具，每天加1
 			$date=date('Y-m-d',time());
 			$flash_date=$result[0]->flash_time;
