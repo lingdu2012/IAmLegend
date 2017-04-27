@@ -17,6 +17,9 @@
   ​
   ![](https://github.com/lingdu2012/IAmLegend/blob/master/design/sketch.jpg?raw=true)
   ------
+#效果图
+
+ ![](https://github.com/lingdu2012/IAmLegend/blob/master/design/demo.jpg?raw=true)
 
 #代码架构
 
