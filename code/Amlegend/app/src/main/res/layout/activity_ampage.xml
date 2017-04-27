@@ -13,14 +13,18 @@
     tools:context="cn.angeldo.amlegend.Ampage">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="100dp"
         android:text="Hello Legend!"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
         android:id="@+id/i_name"
-        android:layout_alignParentBottom="true"
+        android:textSize="10sp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:background="@drawable/tx_bg"
+        android:paddingTop="40dp"
+        android:textAlignment="center"
+        />
 
     <RelativeLayout
         android:id="@+id/boom_area"
@@ -100,10 +104,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/info_location"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/colorGray"
+        android:textSize="10sp"
         android:text="正在初始化，请稍候······"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="85dp"
+        android:layout_below="@+id/boom_area"
+        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true" />
     <ImageView
         android:id="@+id/my_bird"
@@ -111,6 +116,7 @@
         android:layout_height="50dp"
         android:src="@drawable/bird"
         android:visibility="invisible"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="225dp"
+        android:layout_alignRight="@+id/boom_area"/>
 </RelativeLayout>
