@@ -182,7 +182,7 @@ public class Ampage extends Activity {
             }
         });
         checkRights();
-        //encryptPwd();
+       // encryptPwd();
     }
     //检查权限
     private void checkRights(){
@@ -686,7 +686,7 @@ public class Ampage extends Activity {
             byte[] output = cipher.doFinal(plainData.getBytes("utf-8"));
             // 必须先encode成 byte[]，再转成encodeToString，否则服务器解密会失败
             byte[] encode = Base64.encode(output, Base64.DEFAULT);
-            //return Base64.encodeToString(encode, Base64.DEFAULT);
+           // encryedData=Base64.encodeToString(encode, Base64.DEFAULT);
             Log.i("Amlegend","加密后的字符串："+Base64.encodeToString(encode, Base64.DEFAULT));
         } catch (Exception e) {
             e.printStackTrace();
