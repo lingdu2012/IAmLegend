@@ -2,3 +2,6 @@ code/www/api/.project
 code/Amlegend/app/src/main/assets/
 code/www/api/public/private.key
 code/www/api/public/public.key
+code/www/api/public/rsa_private_key.pem
+code/www/api/public/rsa_private_key_pkcs8.pem
+code/www/api/public/rsa_public_key.pem

@@ -8,13 +8,35 @@ class UserController extends BaseController
 {
 	
 	public function __construct(){
-       // header("Content-type: text/html;charset=utf-8"); 
+        header("Content-type: text/html;charset=utf-8"); 
     }
     public function register(){
-    	//$result=array("0"=>'my',"1"=>"time");
+    	
+		/**公钥加密*/
+    	$filename = "rsa_public_key.pem";
+	    $handle = fopen($filename, "r");//读取二进制文件时，需要将第二个参数设置成'rb'
+	    //通过filesize获得文件大小，将整个文件一下子读到一个字符串中
+	    $contents = fread($handle, filesize ($filename));
+	    fclose($handle);
+		$pu_key = openssl_pkey_get_public($contents);
+		$data="123456888";
+		openssl_public_encrypt($data,$encrypted,$pu_key);//公钥加密
+		$encrypted = base64_encode($encrypted);
+		//echo "加密后的数据：".$encrypted."\n";
 		
-
-
+		
+		/**私钥解密*/
+		$str="Z1M08ma/raGd+aZp91CyFXSGtXqXwgdhOyrAoelnQCYHx+YGl9zgXi2mQXTIxvcizEnqo3cwmqA1IB2yhJJ6AXnhK4+dAdHAQNok/IoSeZN1Z9hsGDzuyffkUffgKVp9K9y+Dg7h6zPk+tCpL9nYXlySMa94FMaf/z6CIYz8izI=";
+		$filename = "rsa_private_key.pem";
+	    $handle = fopen($filename, "r");//读取二进制文件时，需要将第二个参数设置成'rb'
+	    //通过filesize获得文件大小，将整个文件一下子读到一个字符串中
+	    $contents = fread($handle, filesize ($filename));
+	    fclose($handle);
+		$pi_key =  openssl_pkey_get_private($contents);//这个函数可用来判断私钥是否是可用的，可用返回资源id Resource id
+		openssl_private_decrypt(base64_decode($str),$decrypted,$pi_key);//私钥解密
+		echo "解密后的字符串：".$decrypted;
+	
+		
     }
 	/**
 	 * 初始化用户

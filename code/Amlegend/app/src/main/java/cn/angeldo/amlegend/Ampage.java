@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Random;
 
 import javax.crypto.Cipher;
 
@@ -182,7 +181,7 @@ public class Ampage extends Activity {
             }
         });
         checkRights();
-       // encryptPwd();
+        //encryptPwd();
     }
     //检查权限
     private void checkRights(){
@@ -648,14 +647,14 @@ public class Ampage extends Activity {
      * 将数据和加密口令(token)一起传输给服务器
      * */
     private void encryptPwd(){
-        Random rand = new Random();
-        int i = rand.nextInt(1000);
+        //Random rand = new Random();
+        //int i = rand.nextInt(1000);
 
         InputStream pubKey=null;
         String string_pubKey="";
         //读取公钥文件
         try {
-            pubKey=getApplicationContext().getClass().getClassLoader().getResourceAsStream("assets/public.key");
+            pubKey=getApplicationContext().getClass().getClassLoader().getResourceAsStream("assets/rsa_public_key.pem");
             int lenght = pubKey.available();
             byte[] buff = new byte[lenght];
             pubKey.read(buff);
@@ -674,7 +673,7 @@ public class Ampage extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String plainData="123456";
+        String plainData="123456hello";
         //进行RSA加密处理
         try {
             if (publicKey == null) {
@@ -683,11 +682,12 @@ public class Ampage extends Activity {
             Cipher cipher = null;
             cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");// 此处如果写成"RSA"加密出来的信息JAVA服务器无法解析
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            byte[] output = cipher.doFinal(plainData.getBytes("utf-8"));
+            byte plaintext[] = plainData.getBytes("UTF-8");
+            byte[] output = cipher.doFinal(plaintext);
             // 必须先encode成 byte[]，再转成encodeToString，否则服务器解密会失败
             byte[] encode = Base64.encode(output, Base64.DEFAULT);
-           // encryedData=Base64.encodeToString(encode, Base64.DEFAULT);
-            Log.i("Amlegend","加密后的字符串："+Base64.encodeToString(encode, Base64.DEFAULT));
+            String s=new String(encode);
+            Log.i("Amlegend","加密后的字符串："+s);
         } catch (Exception e) {
             e.printStackTrace();
         }
