@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.location.LocationClient;
@@ -40,6 +41,8 @@ import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.crypto.Cipher;
 
@@ -52,6 +55,7 @@ import cn.finalteam.toolsfinal.JsonFormatUtils;
 
 import static cn.angeldo.amlegend.R.drawable.target;
 import static cn.angeldo.amlegend.R.id.itool;
+import static com.baidu.location.h.j.s;
 
 /**
  * 功能描述：
@@ -180,8 +184,8 @@ public class Ampage extends Activity {
                 boomTarget();
             }
         });
-        checkRights();
-        //encryptPwd();
+        //checkRights();
+        getToken();
     }
     //检查权限
     private void checkRights(){
@@ -646,10 +650,21 @@ public class Ampage extends Activity {
      * 每次将传输数据用DES进行加密
      * 将数据和加密口令(token)一起传输给服务器
      * */
-    private void encryptPwd(){
-        //Random rand = new Random();
-        //int i = rand.nextInt(1000);
-
+    private void getToken(){
+        String token="";
+        //生成一个随机数
+        long Temp=Math.round(Math.random()*89999999+10000000);
+        String key=String.valueOf(Temp);
+        Log.i("Amlegend","随机值是："+key);
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("users","xiaowang");
+        String tk=encryptStr(map,key);
+        Log.i("Amlegend","des加密后："+tk);
+        //return token;
+    }
+    private String encryptToken(String plainData){
+        String str="";
+        plainData="123456hello";
         InputStream pubKey=null;
         String string_pubKey="";
         //读取公钥文件
@@ -673,7 +688,6 @@ public class Ampage extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String plainData="123456hello";
         //进行RSA加密处理
         try {
             if (publicKey == null) {
@@ -686,11 +700,27 @@ public class Ampage extends Activity {
             byte[] output = cipher.doFinal(plaintext);
             // 必须先encode成 byte[]，再转成encodeToString，否则服务器解密会失败
             byte[] encode = Base64.encode(output, Base64.DEFAULT);
-            String s=new String(encode);
+            str=new String(encode);
             Log.i("Amlegend","加密后的字符串："+s);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        return str;
+    }
+    /**
+     * DES加密
+     * */
+    private String encryptStr(Map<String,Object> map,String key){
+        String str="";
+        String json =  JSON.toJSONString(map);
+        Log.i("Amlegend","转换后json串："+json);
+        json="12345678";
+        try {
+            PCrypt pcr=new PCrypt();
+            str=pcr.encrypt(json);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  str;
     }
 }
