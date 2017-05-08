@@ -4,6 +4,11 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Contracts\Encryption\DecryptException;
+
+use Pcrypt;
+
 class UserController extends BaseController
 {
 	
@@ -11,7 +16,14 @@ class UserController extends BaseController
         header("Content-type: text/html;charset=utf-8"); 
     }
     public function register(){
+    	/**DES解密*/
     	
+		$str="I9FZkA96nl20png9DMivfg==";
+		$a=new Pcrypt();
+	    $decrypted =$a->setKey("U1MjU1M0FDOUZ.Qz")->decrypt($str);
+		var_dump($decrypted);
+		
+    	exit;
 		/**公钥加密*/
     	$filename = "rsa_public_key.pem";
 	    $handle = fopen($filename, "r");//读取二进制文件时，需要将第二个参数设置成'rb'
@@ -35,6 +47,8 @@ class UserController extends BaseController
 		$pi_key =  openssl_pkey_get_private($contents);//这个函数可用来判断私钥是否是可用的，可用返回资源id Resource id
 		openssl_private_decrypt(base64_decode($str),$decrypted,$pi_key);//私钥解密
 		echo "解密后的字符串：".$decrypted;
+	
+	    
 	
 		
     }
