@@ -664,7 +664,6 @@ public class Ampage extends Activity {
     }
     private String encryptToken(String plainData){
         String str="";
-        plainData="123456hello";
         InputStream pubKey=null;
         String string_pubKey="";
         //读取公钥文件
@@ -713,8 +712,6 @@ public class Ampage extends Activity {
     private String encryptStr(Map<String,Object> map,String key){
         String str="";
         String json =  JSON.toJSONString(map);
-        Log.i("Amlegend","转换后json串："+json);
-        json="12345678";
         try {
             PCrypt pcr=new PCrypt();
             str=pcr.encrypt(json);
